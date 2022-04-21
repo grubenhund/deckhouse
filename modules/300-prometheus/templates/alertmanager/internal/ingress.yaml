@@ -1,0 +1,78 @@
+{{- if and (.Values.global.modules.publicDomainTemplate) (.Values.prometheus.internal.alertmanagers.internal) }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alertmanager
+  namespace: d8-monitoring
+  {{- include "helm_lib_module_labels" (list . (dict "app" "alertmanager")) | nindent 2 }}
+  annotations:
+    web.deckhouse.io/export-name: "alertmanager"
+    kubernetes.io/ingress.class: {{ include "helm_lib_module_ingress_class" . | quote }}
+  {{- if .Values.global.enabledModules | has "user-authn" }}
+    nginx.ingress.kubernetes.io/auth-signin: {{ include "helm_lib_module_uri_scheme" . }}://$host/dex-authenticator/sign_in
+    nginx.ingress.kubernetes.io/auth-url: https://alertmanager-dex-authenticator.d8-monitoring.svc.{{ .Values.global.discovery.clusterDomain }}/dex-authenticator/auth
+  {{- else }}
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
+  {{- end }}
+  {{- if .Values.prometheus.auth.whitelistSourceRanges }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ .Values.prometheus.auth.whitelistSourceRanges | join "," }}
+  {{- end }}
+  {{- if .Values.prometheus.auth.satisfyAny }}
+    nginx.ingress.kubernetes.io/satisfy: "any"
+  {{- end }}
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_ssl_certificate /etc/nginx/ssl/client.crt;
+      proxy_ssl_certificate_key /etc/nginx/ssl/client.key;
+      proxy_ssl_protocols TLSv1.2;
+      proxy_ssl_session_reuse on;
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+spec:
+  ingressClassName: {{ include "helm_lib_module_ingress_class" . | quote }}
+  {{- if (include "helm_lib_module_https_ingress_tls_enabled" .) }}
+  tls:
+  - hosts:
+    - {{ include "helm_lib_module_public_domain" (list . "alertmanager") }}
+    secretName: {{ include "helm_lib_module_https_secret_name" (list . "ingress-tls") }}
+  {{- end }}
+  rules:
+  - host: {{ include "helm_lib_module_public_domain" (list . "alertmanager") }}
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ index .Values.prometheus.internal.alertmanagers.internal 0 "name" }}
+            port:
+              name: https
+  {{- range .Values.prometheus.internal.alertmanagers.internal }}
+      - path: /{{ .name }}(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ .name }}
+            port:
+              name: https
+  {{- end }}
+  {{- if eq (include "helm_lib_module_https_mode" .) "CertManager" }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: alertmanager
+  namespace: d8-monitoring
+  {{- include "helm_lib_module_labels" (list . (dict "app" "alertmanager")) | nindent 2 }}
+spec:
+  secretName: {{ include "helm_lib_module_https_secret_name" (list . "ingress-tls") }}
+  dnsNames:
+  - {{ include "helm_lib_module_public_domain" (list . "alertmanager") }}
+  issuerRef:
+    name: {{ include "helm_lib_module_https_cert_manager_cluster_issuer_name" . }}
+    kind: ClusterIssuer
+  {{- end }}
+{{- end }}

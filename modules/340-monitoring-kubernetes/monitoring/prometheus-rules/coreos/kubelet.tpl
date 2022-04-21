@@ -28,6 +28,7 @@
       severity_level: "3"
     annotations:
       plk_protocol_version: "1"
+      plk_create_group_if_not_exists__target_down: "TargetDown,tier=cluster"
       plk_group_for__target_down: "TargetDown,prometheus=deckhouse,job=kubelet"
       description: Prometheus failed to scrape {{ `{{ $value }}` }}% of kubelets.
       summary: Prometheus failed to scrape
@@ -40,6 +41,7 @@
       likelihood: certain
     annotations:
       plk_protocol_version: "1"
+      plk_create_group_if_not_exists__target_down: "TargetDown,tier=cluster"
       plk_group_for__target_down: "TargetDown,prometheus=deckhouse,job=kubelet"
       description: Prometheus failed to scrape {{ `{{ $value }}` }}% of kubelets, or all Kubelets
         have disappeared from service discovery.
@@ -55,7 +57,6 @@
       severity_level: "7"
     annotations:
       plk_protocol_version: "1"
-      plk_incident_initial_status: "todo"
       description: Kubelet {{ `{{ $labels.node }}` }} is running {{ `{{ $value }}` }} pods, close
         to the limit of {{ `{{ print "kube_node_status_capacity_pods{node='" $labels.node "'}" | query | first | value }}` }}
       summary: Kubelet is close to pod limit

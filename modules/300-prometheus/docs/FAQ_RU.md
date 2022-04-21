@@ -120,9 +120,34 @@ spec:
 ## Как обеспечить безопасный доступ к метрикам?
 Для обеспечения безопасности настоятельно рекомендуем использовать **kube-rbac-proxy**.
 
-## Как добавить дополнительный Alertmanager?
+## Как добавить Alertmanager?
 
-Создать Custom Resource `CustomAlertmanager`, который может указывать на Alertmanager по FQDN или через сервис в Kubernetes-кластере.
+Создать Custom Resource `CustomAlertmanager` с типом `Internal`.
+Пример:
+```yaml
+apiVersion: deckhouse.io/v1alpha1
+kind: CustomAlertmanager
+metadata:
+  name: webhook
+spec:
+  type: Internal
+  internal:
+    route:
+      groupBy: ['job']
+      groupWait: 30s
+      groupInterval: 5m
+      repeatInterval: 12h
+      receiver: 'webhook'
+    receivers:
+    - name: 'webhook'
+      webhookConfigs:
+      - url: 'http://webhookserver:8080/'
+```
+Подробно о всех параметрах можно прочитать в описании Custom Resource [CustomAlertmanager](cr.html#customalertmanager), а также [CustomAlertmanager](cr.html#alertmanager)
+
+## Как добавить внешний дополнительный Alertmanager?
+
+Создать Custom Resource `CustomAlertmanager` с типом `External`, который может указывать на Alertmanager по FQDN или через сервис в Kubernetes-кластере.
 
 Пример FQDN Alertmanager:
 ```yaml

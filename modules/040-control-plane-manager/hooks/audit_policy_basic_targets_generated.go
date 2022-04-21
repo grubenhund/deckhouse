@@ -37,6 +37,7 @@ var auditPolicyBasicNamespaces = []string{
 	"kube-system",
 }
 var auditPolicyBasicServiceAccounts = []string{
+	"alertmanager-internal",
 	"alliance-ingressgateway",
 	"alliance-metadata-exporter",
 	"annotations-converter",

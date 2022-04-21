@@ -44,7 +44,7 @@ var auditPolicyBasicServiceAccounts = []string{
 	"cert-exporter",
 	"cert-manager",
 	"cloud-controller-manager",
-	"cloud-provider-yandex-cloud-metrics-exporter",
+	"cloud-metrics-exporter",
 	"cluster-autoscaler",
 	"cni-flannel",
 	"cni-simple-bridge",

@@ -31,6 +31,7 @@ metadata:
       proxy_ssl_session_reuse on;
     nginx.ingress.kubernetes.io/affinity: cookie
     nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+    nginx.ingress.kubernetes.io/app-root: {{ printf "/%s" (index .Values.prometheus.internal.alertmanagers.internal 0 "name") | quote }}
 spec:
   ingressClassName: {{ include "helm_lib_module_ingress_class" . | quote }}
   {{- if (include "helm_lib_module_https_ingress_tls_enabled" .) }}
@@ -43,13 +44,6 @@ spec:
   - host: {{ include "helm_lib_module_public_domain" (list . "alertmanager") }}
     http:
       paths:
-      - path: /
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: {{ index .Values.prometheus.internal.alertmanagers.internal 0 "name" }}
-            port:
-              name: https
   {{- range .Values.prometheus.internal.alertmanagers.internal }}
       - path: /{{ .name }}(/|$)(.*)
         pathType: ImplementationSpecific

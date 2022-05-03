@@ -79,9 +79,9 @@ RUN mkdir /tmp/cilium-repo && curl -sSL https://github.com/cilium/cilium/archive
 WORKDIR /tmp/cilium-repo/cilium-1.11.4
 
 COPY patches/001-netfilter-compatibility-mode.patch /
-COPY patches/002-customer-ip-annotation.patch /
+COPY patches/002-customer-annotations.patch /
 RUN patch -p1 < /001-netfilter-compatibility-mode.patch && \
-    patch -p1 < /002-customer-ip-annotation.patch
+    patch -p1 < /002-customer-annotations.patch
 
 RUN make PKG_BUILD=1 \
     SKIP_DOCS=true DESTDIR=/tmp/install build-container install-container-binary

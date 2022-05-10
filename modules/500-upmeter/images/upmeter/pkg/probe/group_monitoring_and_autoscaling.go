@@ -39,7 +39,7 @@ func initMonitoringAndAutoscaling(access kubernetes.Access) []runnerConfig {
 				Access:                    access,
 				Timeout:                   5 * time.Second,
 				Namespace:                 "d8-monitoring",
-				LabelSelector:             "app.kubernetes.io/name=prometheus",
+				LabelSelector:             "operator.prometheus.io/name=main",
 				ControlPlaneAccessTimeout: cpTimeout,
 			},
 		}, {

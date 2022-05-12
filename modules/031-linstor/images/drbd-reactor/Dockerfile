@@ -3,11 +3,11 @@ ARG BASE_DEBIAN
 FROM $BASE_DEBIAN as utils-builder
 
 ARG UTILS_GITREPO=https://github.com/LINBIT/drbd-utils
-ARG UTILS_VERSION=9.20.2
+ARG UTILS_VERSION=9.21.1
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \
- && apt-get -y install build-essential debhelper git flex clitest xsltproc locales libxml2-utils po4a bash-completion dh-systemd docbook-xsl udev asciidoctor \
+ && apt-get -y install build-essential debhelper git flex clitest xsltproc locales libxml2-utils po4a bash-completion dh-systemd docbook-xsl udev asciidoctor bash-completion \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -34,7 +34,7 @@ RUN dpkg-buildpackage -us -uc
 FROM $BASE_DEBIAN as reactor-builder
 
 ARG REACTOR_GITREPO=https://github.com/LINBIT/drbd-reactor
-ARG REACTOR_VERSION=0.5.3
+ARG REACTOR_VERSION=0.6.1
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \

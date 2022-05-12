@@ -3,7 +3,7 @@ ARG BASE_GOLANG_17_BUSTER
 
 FROM $BASE_GOLANG_17_BUSTER as builder
 ARG PIRAEUS_OPERATOR_GITREPO=https://github.com/piraeusdatastore/piraeus-operator
-ARG PIRAEUS_OPERATOR_VERSION=1.8.0-rc.1-6-g584f016
+ARG PIRAEUS_OPERATOR_VERSION=v1.8.0-16-g00e72e0
 
 # Copy patches
 COPY ./patches /patches

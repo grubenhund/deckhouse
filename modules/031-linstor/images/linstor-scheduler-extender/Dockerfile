@@ -3,7 +3,7 @@ ARG BASE_GOLANG_17_BUSTER
 
 FROM $BASE_GOLANG_17_BUSTER as builder
 ARG LINSTOR_SCHEDULER_EXTENDER_GITREPO=https://github.com/piraeusdatastore/linstor-scheduler-extender
-ARG LINSTOR_SCHEDULER_EXTENDER_VERSION=0.2.0
+ARG LINSTOR_SCHEDULER_EXTENDER_VERSION=v0.2.0-3-g52b9b5c
 
 RUN git clone ${LINSTOR_SCHEDULER_EXTENDER_GITREPO} /usr/local/go/linstor-scheduler-extender \
  && cd /usr/local/go/linstor-scheduler-extender \

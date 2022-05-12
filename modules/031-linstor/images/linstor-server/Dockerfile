@@ -4,7 +4,7 @@ ARG BASE_GOLANG_17_BUSTER
 FROM $BASE_DEBIAN as linstor-builder
 
 ARG LINSTOR_GITREPO=https://github.com/LINBIT/linstor-server
-ARG LINSTOR_VERSION=1.18.0
+ARG LINSTOR_VERSION=1.18.1
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \
@@ -32,7 +32,7 @@ FROM $BASE_DEBIAN as client-builder
 ARG API_GITREPO=https://github.com/LINBIT/linstor-api-py
 ARG API_VERSION=1.13.0
 ARG CLIENT_GITREPO=https://github.com/LINBIT/linstor-client
-ARG CLIENT_VERSION=1.13.0
+ARG CLIENT_VERSION=1.13.1
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \
@@ -79,7 +79,7 @@ RUN git clone ${K8S_AWAIT_ELECTION_GITREPO} /usr/local/go/k8s-await-election/ \
 FROM $BASE_DEBIAN as utils-builder
 
 ARG UTILS_GITREPO=https://github.com/LINBIT/drbd-utils
-ARG UTILS_VERSION=9.20.2
+ARG UTILS_VERSION=9.21.1
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \

@@ -2,7 +2,7 @@ ARG BASE_DEBIAN
 
 FROM $BASE_DEBIAN as builder
 ARG DRBD_GITREPO=https://github.com/LINBIT/drbd
-ARG DRBD_VERSION=9.1.6
+ARG DRBD_VERSION=9.1.7
 
 RUN apt-get update \
  && apt-get install -y make git \
